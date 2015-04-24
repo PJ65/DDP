@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Developing Data Products - Pitch Presentation</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Developing Data Products - Pitch Presentation">
+  <meta name="author" content="PJ">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <aside class="gdbar">
+    <img src="assets/img/cherry tree in blossom.png">
+  </aside>
+  <hgroup class="auto-fadein">
+    <h1>Developing Data Products - Pitch Presentation</h1>
+    <h2>Shiny App - Volume of timber</h2>
+    <p>PJ<br/>Student @ Coursera</p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <article data-timings="">
+    <style>
+em {
+  font-style: italic
+}
+strong {
+  font-weight: bold;
+}
+</style>
+
+<h2>Shiny App</h2>
+
+<p><strong>Finding volume of timber produced by black cherry tree</strong>
+<hr color=black></hr></p>
+
+<p>The logo shows a cherry tree in blossom. I would prefer and advise you not to cut this tree for timber, please.</p>
+
+<p>The application auto-generates prediction on volume of timber for the keyed in values of height and girth.</p>
+
+<p>It also draws three scatter plots of volume versus each of height, girth and the approximate model, \[Volume = {c*Height*Girth^2}\]  </p>
+
+<p>Details of the data and its analysis follows next.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-2" style="background:;">
+  <hgroup>
+    <h2>Details/Summary of the dataset</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><hr color=black></hr></p>
+
+<p><em>trees</em> is one of the dataset in the <em>datasets</em> library. It provides measurements of the girth, height and volume of timber in 31 felled black cherry trees.<br>
+<em>trees</em> data frame has 31 observations on 3 variables.<br>
+<em>[,1] Girth</em> numeric Tree diameter in inches<br>
+<em>[,2] Height</em> numeric Height in ft<br>
+<em>[,3] Volume</em> numeric Volume of timber in cubic ft<br>
+Note that <em>Girth</em> is the diameter of the tree (in inches) measured at 4 ft 6 in above the ground.</p>
+
+<pre><code class="r">summary(trees)
+</code></pre>
+
+<pre><code>##      Girth           Height       Volume     
+##  Min.   : 8.30   Min.   :63   Min.   :10.20  
+##  1st Qu.:11.05   1st Qu.:72   1st Qu.:19.40  
+##  Median :12.90   Median :76   Median :24.20  
+##  Mean   :13.25   Mean   :76   Mean   :30.17  
+##  3rd Qu.:15.25   3rd Qu.:80   3rd Qu.:37.30  
+##  Max.   :20.60   Max.   :87   Max.   :77.00
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>Plotting the dataset</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><hr color=black></hr></p>
+
+<pre><code class="r">par(mfrow = c(1, 3))
+with(trees, plot(Height, Volume, xlab =&#39;Height (ft)&#39;, ylab =&#39;Volume (cu. ft)&#39;, 
+                 main =&#39;Volume vs Height&#39;))
+with(trees, plot(Girth, Volume, xlab =&#39;Girth (in)&#39;, ylab =&#39;Volume (cu. ft)&#39;, 
+                 main =&#39;Volume vs Girth&#39;))
+with(trees, plot(Height * Girth^2, Volume, main =&#39;Volume vs Approximate Model&#39;))
+</code></pre>
+
+<p><img src="assets/fig/scplot-1.png" alt="plot of chunk scplot"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>Fitting a linear model after logarithmic transformation of data</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><hr color=black></hr></p>
+
+<pre><code class="r">summary(lm(log(Volume) ~ log(Height) + log(Girth), data = trees))
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = log(Volume) ~ log(Height) + log(Girth), data = trees)
+## 
+## Residuals:
+##       Min        1Q    Median        3Q       Max 
+## -0.168561 -0.048488  0.002431  0.063637  0.129223 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -6.63162    0.79979  -8.292 5.06e-09 ***
+## log(Height)  1.11712    0.20444   5.464 7.81e-06 ***
+## log(Girth)   1.98265    0.07501  26.432  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.08139 on 28 degrees of freedom
+## Multiple R-squared:  0.9777, Adjusted R-squared:  0.9761 
+## F-statistic: 613.2 on 2 and 28 DF,  p-value: &lt; 2.2e-16
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-5" style="background:;">
+  <hgroup>
+    <h2>Bibliography</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><hr color=black></hr></p>
+
+<p>The following resources were used to get data and some R code:</p>
+
+<p><strong>Source</strong>  </p>
+
+<p>Ryan, T. A., Joiner, B. L. and Ryan, B. F. (1976). <em>The Minitab Student Handbook</em>. Duxbury Press.</p>
+
+<p><strong>References</strong>  </p>
+
+<p>Atkinson, A. C. (1985). <em>Plots, Transformations and Regression</em>. Oxford University Press.</p>
+
+<p>&quot;<em>Cherry tree in blossom.png</em>&quot; image was downloaded from <a href="http://www.itp.efuller.net/images/_09fall/bs_091228_0.png">http://www.itp.efuller.net/images/_09fall/bs_091228_0.png</a>.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title=''>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Details/Summary of the dataset'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Plotting the dataset'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Fitting a linear model after logarithmic transformation of data'>
+         4
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=5 title='Bibliography'>
+         5
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+</html>

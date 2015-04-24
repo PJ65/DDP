@@ -1,0 +1,90 @@
+---
+title       : Developing Data Products - Pitch Presentation
+subtitle    : Shiny App - Volume of timber
+author      : PJ
+job         : Student @ Coursera
+logo        : cherry tree in blossom.png
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight     # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : [mathjax]     # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+---
+
+<style>
+em {
+  font-style: italic
+}
+strong {
+  font-weight: bold;
+}
+</style>
+
+## Shiny App
+
+**Finding volume of timber produced by black cherry tree**
+<hr color=black></hr>
+
+The logo shows a cherry tree in blossom. I would prefer and advise you not to cut this tree for timber, please.
+
+The application auto-generates prediction on volume of timber for the keyed in values of height and girth.
+
+It also draws three scatter plots of volume versus each of height, girth and the approximate model, $$Volume = {c*Height*Girth^2}$$  
+
+Details of the data and its analysis follows next.
+
+---
+
+## Details/Summary of the dataset
+<hr color=black></hr>
+
+*trees* is one of the dataset in the *datasets* library. It provides measurements of the girth, height and volume of timber in 31 felled black cherry trees.  
+*trees* data frame has 31 observations on 3 variables.  
+*[,1] Girth* numeric Tree diameter in inches  
+*[,2] Height* numeric Height in ft  
+*[,3] Volume* numeric Volume of timber in cubic ft  
+Note that *Girth* is the diameter of the tree (in inches) measured at 4 ft 6 in above the ground.
+
+```{r gist}
+summary(trees)
+```
+
+---
+
+## Plotting the dataset
+<hr color=black></hr>
+```{r scplot, fig.height = 4.5, fig.width = 12}
+par(mfrow = c(1, 3))
+with(trees, plot(Height, Volume, xlab ='Height (ft)', ylab ='Volume (cu. ft)', 
+                 main ='Volume vs Height'))
+with(trees, plot(Girth, Volume, xlab ='Girth (in)', ylab ='Volume (cu. ft)', 
+                 main ='Volume vs Girth'))
+with(trees, plot(Height * Girth^2, Volume, main ='Volume vs Approximate Model'))
+```
+
+---
+
+## Fitting a linear model after logarithmic transformation of data
+<hr color=black></hr>
+
+```{r}
+summary(lm(log(Volume) ~ log(Height) + log(Girth), data = trees))
+```
+
+---
+
+## Bibliography
+<hr color=black></hr>
+
+The following resources were used to get data and some R code:
+
+**Source**  
+
+Ryan, T. A., Joiner, B. L. and Ryan, B. F. (1976). *The Minitab Student Handbook*. Duxbury Press.
+
+**References**  
+
+Atkinson, A. C. (1985). *Plots, Transformations and Regression*. Oxford University Press.
+
+"*Cherry tree in blossom.png*" image was downloaded from <http://www.itp.efuller.net/images/_09fall/bs_091228_0.png>.
